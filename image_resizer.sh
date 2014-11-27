@@ -20,16 +20,19 @@ echo ${res_dir}
 
 [ -d ${res_dir} ] || mkdir ${res_dir}
 
-picture_width=$( ${sips} -g "pixelWidth" ${orig_dir}/* | awk -F": " '{print $2}' | sed '/^\s*$/d' )
-picture_height=$( ${sips} -g "pixelHeight" ${orig_dir}/* | awk -F": " '{print $2}' | sed '/^\s*$/d' )
+ind=0
 
-cp ${orig_dir}/* ${res_dir}/${res_dir}_000.jpg
-
-if [ ${picture_width} -ge ${picture_height} ]; then
-    $sips -Z 1024 ${res_dir}/${res_dir}_000.jpg
-else
-    $sips -Z 768 ${res_dir}/${res_dir}_000.jpg
-fi
+find ${orig_dir} -type f -print0 | \
+    (while read -d $'\0' i; do cp "$i" ${res_dir}/${res_dir}_${ind}.jpg
+    picture_width=$( ${sips} -g "pixelWidth" ${res_dir}/${res_dir}_${ind}.jpg | awk -F": " '{print $2}' | sed '/^\s*$/d' )
+    picture_height=$( ${sips} -g "pixelHeight" ${res_dir}/${res_dir}_${ind}.jpg | awk -F": " '{print $2}' | sed '/^\s*$/d' )
+        if [ ${picture_width} -ge ${picture_height} ]; then
+            $sips -Z 1024 ${res_dir}/${res_dir}_${ind}.jpg
+        else
+            $sips -Z 768 ${res_dir}/${res_dir}_${ind}.jpg
+        fi
+        ind=$((${ind} + 1))
+    done)
 
 echo "done"
 

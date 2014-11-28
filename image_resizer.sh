@@ -14,7 +14,7 @@ set -ue
 
 sips=/usr/bin/sips
 orig_dir="$1"
-res_dir=$( basename "${orig_dir}"_resized )
+res_dir=$( (basename "${orig_dir}"_resized | sed -E "s/[[:space:]]+/_/g" ) )
 
 echo ${res_dir}
 

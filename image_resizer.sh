@@ -13,8 +13,14 @@ set -ue
 #7. Info messages.
 
 sips=/usr/bin/sips
+
 orig_dir="$1"
 max_size="$2"
+
+total_files=$(ls -ltr ${orig_dir} | wc -l)
+[ $total_files -eq 0 ] && echo "The folder you've specified is empty. Terminating the script"
+exit 1
+
 res_dir=$( (basename "${orig_dir}"_resized | sed -E "s/[[:space:]]+/_/g" ) )
 
 echo ${res_dir}
@@ -22,8 +28,6 @@ echo ${res_dir}
 [ -d ${res_dir} ] || mkdir ${res_dir}
 
 ind=1
-
-total_files=$(ls -ltr ${orig_dir} | wc -l)
 
 find ${orig_dir} -type f -print0 | \
     (while read -d $'\0' i; do cp "$i" ${res_dir}/${res_dir}_${ind}.jpg

@@ -20,7 +20,7 @@ echo ${res_dir}
 
 [ -d ${res_dir} ] || mkdir ${res_dir}
 
-ind=0
+ind=1
 
 total_files=$(ls -ltr ${orig_dir} | wc -l)
 

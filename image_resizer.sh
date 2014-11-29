@@ -27,9 +27,9 @@ find ${orig_dir} -type f -print0 | \
     picture_width=$( ${sips} -g "pixelWidth" ${res_dir}/${res_dir}_${ind}.jpg | awk -F": " '{print $2}' | sed '/^\s*$/d' )
     picture_height=$( ${sips} -g "pixelHeight" ${res_dir}/${res_dir}_${ind}.jpg | awk -F": " '{print $2}' | sed '/^\s*$/d' )
         if [ ${picture_width} -ge ${picture_height} ]; then
-            $sips -Z 1024 ${res_dir}/${res_dir}_${ind}.jpg
+            $sips -Z 1024 ${res_dir}/${res_dir}_${ind}.jpg > /dev/null 2>&1
         else
-            $sips -Z 768 ${res_dir}/${res_dir}_${ind}.jpg
+            $sips -Z 768 ${res_dir}/${res_dir}_${ind}.jpg > /dev/null 2>&1
         fi
         ind=$((${ind} + 1))
     done)

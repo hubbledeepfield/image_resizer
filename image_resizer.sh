@@ -2,7 +2,7 @@
 
 set -ue
 
-[ $# -eq 1 ] || { echo "Usage $0 <directory>"; exit 1; }
+[ $# -eq 2 ] || { echo "Usage $0 <directory> <max_size>"; exit 1; }
 
 #1. Resize each picture in a given directory.
 #2. Rename each picture with "$directory_name + $counter".
@@ -14,6 +14,7 @@ set -ue
 
 sips=/usr/bin/sips
 orig_dir="$1"
+max_size="$2"
 res_dir=$( (basename "${orig_dir}"_resized | sed -E "s/[[:space:]]+/_/g" ) )
 
 echo ${res_dir}
@@ -26,7 +27,7 @@ total_files=$(ls -ltr ${orig_dir} | wc -l)
 
 find ${orig_dir} -type f -print0 | \
     (while read -d $'\0' i; do cp "$i" ${res_dir}/${res_dir}_${ind}.jpg
-     $sips -Z 1024 ${res_dir}/${res_dir}_${ind}.jpg > /dev/null 2>&1
+     $sips -Z ${max_size} ${res_dir}/${res_dir}_${ind}.jpg > /dev/null 2>&1
      progr=$(echo "scale=0; 100*${ind}/${total_files}" | bc -l )
      echo "progress: ${progr}% "
      ind=$((${ind} + 1))

@@ -22,6 +22,8 @@ echo ${res_dir}
 
 ind=0
 
+total_files=$(ls -ltr ${orig_dir} | wc -l)
+
 find ${orig_dir} -type f -print0 | \
     (while read -d $'\0' i; do cp "$i" ${res_dir}/${res_dir}_${ind}.jpg
     picture_width=$( ${sips} -g "pixelWidth" ${res_dir}/${res_dir}_${ind}.jpg | awk -F": " '{print $2}' | sed '/^\s*$/d' )
@@ -31,6 +33,8 @@ find ${orig_dir} -type f -print0 | \
         else
             $sips -Z 768 ${res_dir}/${res_dir}_${ind}.jpg > /dev/null 2>&1
         fi
+        progr=$(echo "scale=0; 100*${ind}/${total_files}" | bc -l )
+        echo "progress: ${progr}% "
         ind=$((${ind} + 1))
     done)
 

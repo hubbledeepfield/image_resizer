@@ -32,6 +32,6 @@ find ${orig_dir} -type f -print0 | \
      ind=$((${ind} + 1))
     done)
 
-echo "done"
+echo "Completed"
 
 exit

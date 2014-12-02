@@ -18,8 +18,8 @@ orig_dir="$1"
 max_size="$2"
 
 total_files=$(ls -ltr ${orig_dir} | wc -l)
-[ $total_files -eq 0 ] && echo "The folder you've specified is empty. Terminating the script"
-exit 1
+
+[ $total_files -eq 0 ] && { echo "The folder you've specified is empty. Terminating the script"; exit 1; }
 
 res_dir=$( (basename "${orig_dir}"_resized | sed -E "s/[[:space:]]+/_/g" ) )
 

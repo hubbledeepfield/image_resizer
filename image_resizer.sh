@@ -2,7 +2,7 @@
 
 set -ue
 
-[ $# -eq 2 ] || { echo "Usage $0 <directory> <max_size>"; exit 1; }
+[ $# -eq 1 ] || { echo "Usage $0 <directory> <max_size>"; exit 1; }
 
 #1. Resize each picture in a given directory.
 #2. Rename each picture with "$directory_name + $counter".
@@ -15,7 +15,8 @@ set -ue
 sips=/usr/bin/sips
 
 orig_dir="$1"
-max_size="$2"
+default_size="1024"
+max_size=${2:-$default_size}
 
 total_files=$(ls -ltr ${orig_dir} | wc -l)
 

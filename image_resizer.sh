@@ -32,7 +32,7 @@ ind=1
 
 find ${orig_dir} -type f -print0 | \
     (while read -d $'\0' i; do cp "$i" ${res_dir}/${res_dir}_${ind}.jpg
-     $sips -Z ${max_size} ${res_dir}/${res_dir}_${ind}.jpg > /dev/null 2>&1
+     $sips --resampleWidth ${max_size} --setProperty formatOptions best ${res_dir}/${res_dir}_${ind}.jpg > /dev/null 2>&1
      progr=$(echo "scale=0; 100*${ind}/${total_files}" | bc -l )
      echo "progress: ${progr}% "
      ind=$((${ind} + 1))

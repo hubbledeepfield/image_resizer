@@ -2,7 +2,7 @@
 
 set -ue
 
-[ $# -eq 1 ] || { echo "Usage $0 <directory> <max_size>"; exit 1; }
+[ $# -ge 1 ] || { echo "Usage $0 <directory> <max_size>"; exit 1; }
 
 #1. Resize each picture in a given directory.
 #2. Rename each picture with "$directory_name + $counter".

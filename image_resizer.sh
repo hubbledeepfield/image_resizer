@@ -18,26 +18,44 @@ orig_dir="$1"
 default_size="1024"
 max_size=${2:-$default_size}
 
-total_files=$(ls -ltr ${orig_dir} | wc -l)
+total_files=$(ls ${orig_dir} | wc -l)
 
 [ $total_files -eq 0 ] && { echo "The folder you've specified is empty. Terminating the script"; exit 1; }
 
-res_dir=$( (basename "${orig_dir}"_resized | sed -E "s/[[:space:]]+/_/g" ) )
+res_dir_name=$( (basename "${orig_dir}"_resized | sed -E "s/[[:space:]]+/_/g" ) )
+res_dir=$HOME/$res_dir_name
 
-echo ${res_dir}
+function resize {
+mkdir $res_dir
+    ind=1
+    find ${orig_dir} -type f -print0 | \
+        (while read -d $'\0' i; do cp "$i" ${res_dir}/${ind}.jpg
+        $sips --resampleWidth ${max_size} --setProperty formatOptions best ${res_dir}/${ind}.jpg > /dev/null 2>&1
+        progr=$(echo "scale=0; 100*${ind}/${total_files}" | bc -l )
+        echo "progress: ${progr}% "
+        ind=$((${ind} + 1))
+        done)
+    echo "Completed. Bye! "
+}
 
-[ -d ${res_dir} ] || mkdir ${res_dir}
+echo "Resized pictures will be stored to: ${res_dir}"
 
-ind=1
-
-find ${orig_dir} -type f -print0 | \
-    (while read -d $'\0' i; do cp "$i" ${res_dir}/${res_dir}_${ind}.jpg
-     $sips --resampleWidth ${max_size} --setProperty formatOptions best ${res_dir}/${res_dir}_${ind}.jpg > /dev/null 2>&1
-     progr=$(echo "scale=0; 100*${ind}/${total_files}" | bc -l )
-     echo "progress: ${progr}% "
-     ind=$((${ind} + 1))
-    done)
-
-echo "Completed"
-
+if [ -d ${res_dir} ]; then
+    existing_modified=$( (stat -f "%t%Sm" $res_dir | sed -E "s/[[:space:]]+/ /g") )
+    existing_contains=$( (ls $res_dir | wc -l | sed -E "s/[[:space:]]+/ /g") )
+    echo "$res_dir already exists. It was modified on$existing_modified and contains$existing_contains files" ;
+    echo "Are you sure you want to continue?"
+    echo "y / n"
+    read choice
+    if [ "$choice" == "y" ]; then
+        rm -rf $res_dir
+        resize
+    elif [ "$choice" == "n" ]; then
+        echo "OK. Bye!"
+    else
+        echo "Go home, you're drunk"
+    fi
+else
+    resize
+fi
 exit
